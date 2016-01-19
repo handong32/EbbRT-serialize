@@ -1,8 +1,8 @@
 MYDIR := $(dir $(lastword $(MAKEFILE_LIST)))
 
-app_sources := serialize.cc Printer.cc 
+app_sources := serialize.cc SerializeEbb.cc 
 
-target := serialize
+target := SerializeEbb
 
 EBBRT_APP_LINK += -lboost_system -lboost_serialization
 
