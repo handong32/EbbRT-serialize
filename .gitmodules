@@ -1,3 +1,6 @@
 [submodule "baremetal/ext/boost"]
 	path = baremetal/ext/boost
 	url = git@github.com:handong32/EbbRT-boost
+[submodule "baremetal/build/libs"]
+	path = baremetal/build/libs
+	url = git@github.com:handong32/EbbRT-ext-libs
