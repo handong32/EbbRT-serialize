@@ -14,26 +14,30 @@ void SerializeEbb::Send(const char *str) {
   SendMessage(remote_nid_, std::move(buf));
 }
 
+struct membuf : std::streambuf {
+  membuf(char *begin, char *end) { this->setg(begin, begin, end); }
+};
+
 void SerializeEbb::ReceiveMessage(ebbrt::Messenger::NetworkId nid,
-                              std::unique_ptr<ebbrt::IOBuf> &&buffer) {
-  auto output = std::string(reinterpret_cast<const char *>(buffer->Data()));
-
+                                  std::unique_ptr<ebbrt::IOBuf> &&buffer) {
+    //auto output = std::string(reinterpret_cast<const char *>(buffer->Data()));
+  //ebbrt::kprintf("reached while loop\n");
+  //int a = 1;
+  //while (a) {
+  //}
   ebbrt::kprintf("Received %d bytes\n", buffer->ComputeChainDataLength());
+  //ebbrt::IOBuf::DataPointer dp = buffer->GetDataPointer();
+  //auto output = std::string(
+  //    reinterpret_cast<const char *>(dp.Get(buffer->ComputeChainDataLength())));
 
-  std::vector<int> v;
-  std::istringstream ifs;
-  ifs.str(output);
-  boost::archive::text_iarchive ia(ifs);
-  ia & v;
+  //std::vector<int> v;
+  //std::istringstream ifs;
+  //ifs.str(output);
+  //boost::archive::text_iarchive ia(ifs);
+  //ia &v;
 
-  
-  /*for(auto &d: v)
-  {
-      ebbrt::kprintf("%d\n", d);
-      }*/
-
-  std::string t = "abc";
-  Send(t.c_str());
+  std::string tt = "abc";
+  Send(tt.c_str());
 }
 
 SerializeEbb &SerializeEbb::HandleFault(ebbrt::EbbId id) {

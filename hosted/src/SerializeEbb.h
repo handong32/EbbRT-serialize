@@ -8,6 +8,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <chrono>
 
 #include <boost/serialization/vector.hpp>
 #include <boost/archive/text_oarchive.hpp>
@@ -39,7 +40,8 @@ class SerializeEbb : public ebbrt::SharedEbb<SerializeEbb>,
   int counter;
   std::vector<ebbrt::Messenger::NetworkId> nids;
   int vecSize;
-  
+  std::chrono::high_resolution_clock::time_point start;
+
   // this is used to save and load context
   ebbrt::EventManager::EventContext *emec{ nullptr };
 
@@ -49,16 +51,18 @@ class SerializeEbb : public ebbrt::SharedEbb<SerializeEbb>,
   ebbrt::Promise<void> nodesinit;
 
 public:
-SerializeEbb(EbbId _ebbid, int num) : Messagable<SerializeEbb>(_ebbid) {
+  SerializeEbb(EbbId _ebbid, int num) : Messagable<SerializeEbb>(_ebbid) {
     ebbid = _ebbid;
     counter = 0;
     nids.clear();
     vecSize = num;
+    start = std::chrono::high_resolution_clock::now();
   }
 
   static ebbrt::Future<SerializeEbbRef> Create(int num) {
     auto id = ebbrt::ebb_allocator->Allocate();
-    auto ebbref = SharedEbb<SerializeEbb>::Create(new SerializeEbb(id, num), id);
+    auto ebbref =
+        SharedEbb<SerializeEbb>::Create(new SerializeEbb(id, num), id);
 
     // returns a future for the EbbRef
     return ebbrt::global_id_map
@@ -83,7 +87,7 @@ SerializeEbb(EbbId _ebbid, int num) : Messagable<SerializeEbb>(_ebbid) {
   void ReceiveMessage(ebbrt::Messenger::NetworkId nid,
                       std::unique_ptr<ebbrt::IOBuf> &&buffer);
 
-  //adds a NID to vector and sets promise
+  // adds a NID to vector and sets promise
   void addNid(ebbrt::Messenger::NetworkId nid) {
     nids.push_back(nid);
     nodesinit.SetValue();

@@ -21,18 +21,30 @@ void SerializeEbb::ReceiveMessage(ebbrt::Messenger::NetworkId nid,
                               std::unique_ptr<ebbrt::IOBuf> &&buffer) {
   auto output = std::string(reinterpret_cast<const char *>(buffer->Data()));
   std::cout << "Received msg: " << nid.ToString() << ": " << output << "\n";
-  mypromise.SetValue();
+
+  std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
+  std::chrono::duration<double> ts = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
+  std::cout << ts.count() << " seconds" << std::endl;
+
+  std::cout << "runJob() ended" << std::endl;
+  ebbrt::active_context->io_service_.stop();
+  //mypromise.SetValue();
 }
 
 void SerializeEbb::runJob() {
-  std::cout << "runJob() " << std::endl;
-
+    
+    int x;
+    std::cout << "runJob() " << std::endl;
+    std::cout << "Enter a number: ";
+    std::cin >> x;
+  
   std::vector<int> v;
   for(int i = 0; i < vecSize; i++)
   {
       v.push_back(i);
   }
-  
+
+  start = std::chrono::high_resolution_clock::now();
   std::ostringstream ofs;
   boost::archive::text_oarchive oa(ofs);
   oa & v;

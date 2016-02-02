@@ -61,11 +61,11 @@ void run(int argc, char **argv) {
       });
 
       // waiting to receive messages from all nodes
-      ref->waitReceive().Then([ref](ebbrt::Future<void> f) {
+      /*ref->waitReceive().Then([ref](ebbrt::Future<void> f) {
         f.Get();
         std::cout << "runJob() ended" << std::endl;
         ebbrt::active_context->io_service_.stop();
-      });
+	});*/
     });
   });
 
